@@ -1,0 +1,27 @@
+/* Additional styles for error and success messages */
+.auth-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.error-message {
+  background-color: #fee;
+  color: #c33;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border: 1px solid #fcc;
+  font-size: 0.9rem;
+}
+
+.success-message {
+  background-color: #efe;
+  color: #363;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border: 1px solid #cfc;
+  font-size: 0.9rem;
+}
