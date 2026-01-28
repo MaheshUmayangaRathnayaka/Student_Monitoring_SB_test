@@ -1,0 +1,366 @@
+.alert-panel {
+  background: #0f172a;
+  min-height: calc(100vh - 80px);
+  padding: 24px;
+}
+
+.alert-panel h2 {
+  color: #f1f5f9;
+  margin-bottom: 24px;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.loading {
+  color: #94a3b8;
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1rem;
+}
+
+/* Thresholds Info */
+.thresholds-info {
+  background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+  border: 1px solid #475569;
+}
+
+.thresholds-info h4 {
+  color: #f1f5f9;
+  margin-bottom: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.threshold-items {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.threshold-item {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  padding: 8px 16px;
+  background: #0f172a;
+  border-radius: 8px;
+  border: 1px solid #334155;
+}
+
+.threshold-item.critical {
+  color: #fca5a5;
+  border-color: #ef4444;
+}
+
+/* Alerts Container */
+.alerts-container,
+.at-risk-container {
+  margin-top: 20px;
+}
+
+.no-alerts {
+  text-align: center;
+  padding: 60px 20px;
+  background: #1e293b;
+  border-radius: 12px;
+  border: 2px dashed #334155;
+}
+
+.success-icon {
+  font-size: 4rem;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.no-alerts p {
+  color: #f1f5f9;
+  font-size: 1.25rem;
+  margin: 8px 0;
+}
+
+.no-alerts .sub-text {
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+/* Student Alert Cards */
+.alerts-list {
+  display: grid;
+  gap: 16px;
+}
+
+.alert-card {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 20px;
+  border-left: 4px solid;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s;
+}
+
+.alert-card:hover {
+  transform: translateX(4px);
+}
+
+.alert-card.alert-critical {
+  border-left-color: #ef4444;
+  background: linear-gradient(135deg, #1e293b 0%, #2d1a1f 100%);
+}
+
+.alert-card.alert-warning {
+  border-left-color: #f59e0b;
+  background: linear-gradient(135deg, #1e293b 0%, #2d2415 100%);
+}
+
+.alert-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.alert-icon {
+  font-size: 1.5rem;
+}
+
+.alert-header h4 {
+  color: #f1f5f9;
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.alert-message {
+  color: #e2e8f0;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.alert-subject {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+.alert-recommendation {
+  background: #0f172a;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 12px;
+  border: 1px solid #334155;
+}
+
+.alert-recommendation strong {
+  color: #667eea;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.alert-recommendation p {
+  color: #cbd5e1;
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.alert-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-top: 12px;
+}
+
+.alert-badge.overall {
+  background: #3b82f6;
+  color: white;
+}
+
+.alert-badge.attendance {
+  background: #f59e0b;
+  color: white;
+}
+
+.alert-badge.subject {
+  background: #ef4444;
+  color: white;
+}
+
+.alert-badge.subject-attendance {
+  background: #f97316;
+  color: white;
+}
+
+/* At-Risk Students Cards */
+.at-risk-list {
+  display: grid;
+  gap: 20px;
+}
+
+.at-risk-card {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 24px;
+  border: 2px solid;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.at-risk-card.alert-critical {
+  border-color: #ef4444;
+  background: linear-gradient(135deg, #1e293b 0%, #2d1a1f 100%);
+}
+
+.at-risk-card.alert-warning {
+  border-color: #f59e0b;
+  background: linear-gradient(135deg, #1e293b 0%, #2d2415 100%);
+}
+
+.student-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #334155;
+}
+
+.student-info h4 {
+  color: #f1f5f9;
+  font-size: 1.25rem;
+  margin: 0 0 8px 0;
+}
+
+.student-id,
+.student-email {
+  color: #94a3b8;
+  font-size: 0.9rem;
+  margin: 4px 0;
+}
+
+.risk-badge {
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.risk-badge.critical {
+  background: #ef4444;
+  color: white;
+}
+
+.risk-badge.warning {
+  background: #f59e0b;
+  color: white;
+}
+
+/* Metrics Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  background: #0f172a;
+  border-radius: 8px;
+  border: 1px solid #334155;
+}
+
+.metric-label {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin-bottom: 8px;
+}
+
+.metric-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.metric-value.critical {
+  color: #ef4444;
+}
+
+.metric-value.warning {
+  color: #f59e0b;
+}
+
+.metric-value.good {
+  color: #10b981;
+}
+
+/* Alerts Summary */
+.alerts-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.mini-alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #0f172a;
+  border-radius: 6px;
+  border-left: 3px solid;
+  font-size: 0.85rem;
+}
+
+.mini-alert.critical {
+  border-left-color: #ef4444;
+}
+
+.mini-alert.warning {
+  border-left-color: #f59e0b;
+}
+
+.mini-icon {
+  font-size: 1rem;
+}
+
+.mini-text {
+  color: #cbd5e1;
+  flex: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .alert-panel {
+    padding: 16px;
+  }
+
+  .alert-panel h2 {
+    font-size: 1.5rem;
+  }
+
+  .threshold-items {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .student-header {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .risk-badge {
+    align-self: flex-start;
+  }
+}

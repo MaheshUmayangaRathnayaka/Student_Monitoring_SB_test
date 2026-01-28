@@ -1,0 +1,64 @@
+.performance-chart {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.chart-wrapper {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.chart-wrapper h3 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.grade-legend {
+  background: #f9fafb;
+  padding: 20px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.grade-legend h4 {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.legend-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.legend-count {
+  color: #666;
+  margin-left: auto;
+}
+
+@media (max-width: 768px) {
+  .legend-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+}

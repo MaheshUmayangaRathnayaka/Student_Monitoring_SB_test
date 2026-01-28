@@ -1,0 +1,65 @@
+.radar-chart-container {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.radar-chart-container h3 {
+  color: #f1f5f9;
+  margin-bottom: 20px;
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.no-data {
+  text-align: center;
+  color: #94a3b8;
+  padding: 40px;
+  font-size: 1rem;
+}
+
+.performance-summary {
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid #334155;
+}
+
+.summary-stats {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.stat-label {
+  color: #94a3b8;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.stat-value {
+  color: #667eea;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+@media (max-width: 768px) {
+  .radar-chart-container {
+    padding: 16px;
+  }
+
+  .summary-stats {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
