@@ -311,6 +311,36 @@ Authorization: Bearer <your-jwt-token>
 - Use proper MongoDB Atlas URI for production
 - The server includes automatic error logging and graceful shutdown
 
+## 🧩 MongoDB Connection & Troubleshooting
+
+This server reads connection strings from `.env`:
+
+- `MONGODB_URI`: SRV connection string (`mongodb+srv://...`) copied from Atlas (Drivers).
+- `MONGODB_URI_STANDARD` (optional): Non-SRV standard string (`mongodb://host1,host2,...`) copied from Atlas (Standard). If SRV DNS fails, the server will automatically attempt this fallback.
+
+### Common Errors
+
+- `MongoDB connection error: querySrv ENOTFOUND _mongodb._tcp.<cluster>`
+  - Flush DNS: `ipconfig /flushdns`
+  - Check internet/VPN/proxy/firewall
+  - Ensure Atlas cluster is running
+  - Add `MONGODB_URI_STANDARD` to `.env` and retry
+
+- `IP not authorized` / whitelist issues
+  - In Atlas: Security > Network Access > Add Current IP
+  - For testing only, temporarily allow `0.0.0.0/0` (not for production)
+
+### Test the Connection
+
+Run the built-in script:
+
+```bash
+cd server
+node scripts/test-connection.js
+```
+
+See `.env.example` for sample values and guidance.
+
 ## 🔜 Next Steps
 
 Phase 3 will include:

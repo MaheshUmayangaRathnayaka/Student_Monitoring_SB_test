@@ -31,7 +31,16 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await authService.login(credentials);
-      const { token: userToken, ...userData } = response.data;
+      console.log('Login response:', response);
+      
+      // Check if response has expected structure
+      if (!response || (!response._id && !response.user)) {
+        throw new Error('Invalid response structure from server');
+      }
+      
+      // Handle different response formats
+      const responseData = response._id ? response : response.user;
+      const { token: userToken, ...userData } = responseData;
       
       setUser(userData);
       setToken(userToken);
@@ -41,9 +50,22 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: userData };
     } catch (error) {
       console.error('Login error:', error);
+      console.error('Error details:', error);
+      
+      // Extract meaningful error message
+      let errorMessage = 'Login failed';
+      
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      
       return { 
         success: false, 
-        error: error.response?.data?.message || error.message || 'Login failed' 
+        error: errorMessage
       };
     }
   };
@@ -54,11 +76,14 @@ export const AuthProvider = ({ children }) => {
       const response = await authService.register(userData);
       console.log('Signup response:', response);
       
-      if (!response.data) {
-        throw new Error('No data received from server');
+      // Check if response has expected structure
+      if (!response || (!response._id && !response.user)) {
+        throw new Error('Invalid response structure from server');
       }
       
-      const { token: userToken, ...newUser } = response.data;
+      // Handle different response formats
+      const responseData = response._id ? response : response.user;
+      const { token: userToken, ...newUser } = responseData;
       
       setUser(newUser);
       setToken(userToken);
@@ -68,10 +93,22 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: newUser };
     } catch (error) {
       console.error('Signup error:', error);
-      console.error('Error response:', error.response);
+      console.error('Error details:', error);
+      
+      // Extract meaningful error message
+      let errorMessage = 'Signup failed';
+      
+      if (error.message) {
+        errorMessage = error.message;
+      } else if (typeof error === 'string') {
+        errorMessage = error;
+      } else if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      }
+      
       return { 
         success: false, 
-        error: error.response?.data?.message || error.message || 'Signup failed' 
+        error: errorMessage
       };
     }
   };

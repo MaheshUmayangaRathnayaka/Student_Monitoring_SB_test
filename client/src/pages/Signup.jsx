@@ -11,6 +11,9 @@ const Signup = () => {
     confirmPassword: '',
     role: 'student',
     studentId: '',
+    phone: '',
+    grade: '',
+    semester: '',
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -47,6 +50,24 @@ const Signup = () => {
       return;
     }
 
+    // Validate phone number (10 digits only)
+    if (formData.phone && !/^\d{10}$/.test(formData.phone)) {
+      setError('Phone number must be exactly 10 digits');
+      return;
+    }
+
+    // Validate grade and semester for students
+    if (formData.role === 'student') {
+      if (!formData.grade) {
+        setError('Grade is required for students');
+        return;
+      }
+      if (!formData.semester) {
+        setError('Semester is required for students');
+        return;
+      }
+    }
+
     setLoading(true);
 
     const signupData = {
@@ -56,9 +77,16 @@ const Signup = () => {
       role: formData.role,
     };
 
-    // Add studentId only if role is student
+    // Add student-specific fields
     if (formData.role === 'student') {
       signupData.studentId = formData.studentId;
+      signupData.grade = formData.grade;
+      signupData.semester = formData.semester;
+    }
+
+    // Add phone if provided
+    if (formData.phone.trim()) {
+      signupData.phone = formData.phone;
     }
 
     const result = await signup(signupData);
@@ -109,19 +137,66 @@ const Signup = () => {
 
           <div className="form-group">
           {formData.role === 'student' && (
-            <div className="form-group">
-              <label htmlFor="studentId">Student ID</label>
-              <input
-                type="text"
-                id="studentId"
-                name="studentId"
-                value={formData.studentId}
-                onChange={handleChange}
-                required
-                placeholder="Enter your student ID"
-              />
-            </div>
+            <>
+              <div className="form-group">
+                <label htmlFor="studentId">Student ID</label>
+                <input
+                  type="text"
+                  id="studentId"
+                  name="studentId"
+                  value={formData.studentId}
+                  onChange={handleChange}
+                  required
+                  placeholder="Enter your student ID"
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="grade">Grade</label>
+                <select
+                  id="grade"
+                  name="grade"
+                  value={formData.grade}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Grade</option>
+                  <option value="10">Grade 10</option>
+                  <option value="11">Grade 11</option>
+                  <option value="12">Grade 12</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="semester">Semester</label>
+                <select
+                  id="semester"
+                  name="semester"
+                  value={formData.semester}
+                  onChange={handleChange}
+                  required
+                >
+                  <option value="">Select Semester</option>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                </select>
+              </div>
+            </>
           )}
+
+          <div className="form-group">
+            <label htmlFor="phone">Phone Number (Optional)</label>
+            <input
+              type="tel"
+              id="phone"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="Enter 10-digit phone number"
+              pattern="[0-9]{10}"
+              title="Phone number must be exactly 10 digits"
+            />
+          </div>
 
             <label htmlFor="role">Role</label>
             <select

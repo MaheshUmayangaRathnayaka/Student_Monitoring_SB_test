@@ -1,0 +1,10 @@
+{
+  "name": "Test User",
+  "email": "testuser@example.com", 
+  "password": "testpassword123",
+  "role": "student",
+  "studentId": "ST001",
+  "phone": "1234567890",
+  "grade": "12",
+  "semester": "1"
+}
