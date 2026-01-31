@@ -7,7 +7,7 @@ const StudentModal = ({ student, onSave, onClose }) => {
     studentId: '',
     email: '',
     phone: '',
-    grade: '',
+    zScore: 0,
     semester: '',
   });
   const [errors, setErrors] = useState({});
@@ -20,7 +20,7 @@ const StudentModal = ({ student, onSave, onClose }) => {
         studentId: student.studentId || '',
         email: student.email || '',
         phone: student.phone || '',
-        grade: student.grade || '',
+        zScore: student.zScore || 0,
         semester: student.semester || '',
       });
     }
@@ -58,8 +58,8 @@ const StudentModal = ({ student, onSave, onClose }) => {
       newErrors.email = 'Email is invalid';
     }
 
-    if (!formData.grade.trim()) {
-      newErrors.grade = 'Grade is required';
+    if (formData.zScore < 0 || formData.zScore > 4) {
+      newErrors.zScore = 'Z-Score must be between 0 and 4';
     }
 
     if (!formData.semester.trim()) {
@@ -160,34 +160,46 @@ const StudentModal = ({ student, onSave, onClose }) => {
 
           <div className="form-row">
             <div className="form-group">
-              <label htmlFor="grade">
-                Grade <span className="required">*</span>
+              <label htmlFor="zScore">
+                Z-Score (0-4) <span className="required">*</span>
               </label>
               <input
-                type="text"
-                id="grade"
-                name="grade"
-                value={formData.grade}
+                type="number"
+                id="zScore"
+                name="zScore"
+                min="0"
+                max="4"
+                step="0.01"
+                value={formData.zScore}
                 onChange={handleChange}
-                className={errors.grade ? 'input-error' : ''}
-                placeholder="e.g., A, B+, etc."
+                className={errors.zScore ? 'input-error' : ''}
+                placeholder="Enter Z-Score (0-4)"
               />
-              {errors.grade && <span className="error-text">{errors.grade}</span>}
+              {errors.zScore && <span className="error-text">{errors.zScore}</span>}
             </div>
 
             <div className="form-group">
               <label htmlFor="semester">
                 Semester <span className="required">*</span>
               </label>
-              <input
-                type="text"
+              <select
                 id="semester"
                 name="semester"
                 value={formData.semester}
                 onChange={handleChange}
                 className={errors.semester ? 'input-error' : ''}
-                placeholder="e.g., Fall 2024"
-              />
+                required
+              >
+                <option value="">Select Semester</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+              </select>
               {errors.semester && <span className="error-text">{errors.semester}</span>}
             </div>
           </div>

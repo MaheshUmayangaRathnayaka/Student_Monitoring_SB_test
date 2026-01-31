@@ -2,9 +2,8 @@ import mongoose from 'mongoose';
 
 // Shared options for mongoose connection
 const baseOptions = {
-  serverSelectionTimeoutMS: 10000, // 10 seconds timeout
+  serverSelectionTimeoutMS: 30000, // 30 seconds timeout
   socketTimeoutMS: 45000, // 45 seconds socket timeout
-  bufferCommands: false,
   maxPoolSize: 10,
 };
 
@@ -56,14 +55,8 @@ const connectDB = async () => {
       }
     }
 
-    // In development, don't exit the process to allow for easier debugging
-    if (process.env.NODE_ENV === 'development') {
-      console.error('Running in development mode - server will continue without database'.yellow);
-      return; // Return instead of throwing to allow server to start
-    }
-
-    // If not in development, exit after failure
-    process.exit(1);
+    // Re-throw the error to prevent server from starting without DB
+    throw error;
   }
 
   // Handle connection events

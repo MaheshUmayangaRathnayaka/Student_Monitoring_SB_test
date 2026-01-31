@@ -12,7 +12,6 @@ const Signup = () => {
     role: 'student',
     studentId: '',
     phone: '',
-    grade: '',
     semester: '',
   });
   const [error, setError] = useState('');
@@ -56,12 +55,8 @@ const Signup = () => {
       return;
     }
 
-    // Validate grade and semester for students
+    // Validate semester for students
     if (formData.role === 'student') {
-      if (!formData.grade) {
-        setError('Grade is required for students');
-        return;
-      }
       if (!formData.semester) {
         setError('Semester is required for students');
         return;
@@ -80,7 +75,6 @@ const Signup = () => {
     // Add student-specific fields
     if (formData.role === 'student') {
       signupData.studentId = formData.studentId;
-      signupData.grade = formData.grade;
       signupData.semester = formData.semester;
     }
 
@@ -152,22 +146,6 @@ const Signup = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="grade">Grade</label>
-                <select
-                  id="grade"
-                  name="grade"
-                  value={formData.grade}
-                  onChange={handleChange}
-                  required
-                >
-                  <option value="">Select Grade</option>
-                  <option value="10">Grade 10</option>
-                  <option value="11">Grade 11</option>
-                  <option value="12">Grade 12</option>
-                </select>
-              </div>
-
-              <div className="form-group">
                 <label htmlFor="semester">Semester</label>
                 <select
                   id="semester"
@@ -179,6 +157,12 @@ const Signup = () => {
                   <option value="">Select Semester</option>
                   <option value="1">Semester 1</option>
                   <option value="2">Semester 2</option>
+                  <option value="3">Semester 3</option>
+                  <option value="4">Semester 4</option>
+                  <option value="5">Semester 5</option>
+                  <option value="6">Semester 6</option>
+                  <option value="7">Semester 7</option>
+                  <option value="8">Semester 8</option>
                 </select>
               </div>
             </>

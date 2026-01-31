@@ -12,13 +12,13 @@ import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Public routes - anyone can view (we'll add student-specific filtering in controller)
-router.get('/', protect, getAllPerformance);
-router.get('/analytics/overview', protect, authorize('teacher', 'admin'), getPerformanceAnalytics);
-router.get('/student/:studentId', protect, getPerformanceByStudent);
-router.get('/:id', protect, getPerformanceById);
+// Public routes - allow viewing performances without authentication
+router.get('/', getAllPerformance);
+router.get('/student/:studentId', getPerformanceByStudent);
+router.get('/:id', getPerformanceById);
 
 // Protected routes - only teachers and admins can modify performance data
+router.get('/analytics/overview', protect, authorize('teacher', 'admin'), getPerformanceAnalytics);
 router.post('/', protect, authorize('teacher', 'admin'), createPerformance);
 router.put('/:id', protect, authorize('teacher', 'admin'), updatePerformance);
 router.delete('/:id', protect, authorize('teacher', 'admin'), deletePerformance);

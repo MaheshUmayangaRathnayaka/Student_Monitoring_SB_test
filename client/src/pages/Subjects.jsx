@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { 
+  PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid
+} from 'recharts';
 import './SubjectManagement.css';
+import './SubjectAverages.css';
 
 const Subjects = () => {
   const { user, role } = useAuth();
@@ -15,6 +19,7 @@ const Subjects = () => {
   const [loading, setLoading] = useState(false);
   const [zScore, setZScore] = useState(0);
   const [pieChartData, setPieChartData] = useState([]);
+  const [subjectAverages, setSubjectAverages] = useState([]);
   const [subjectForm, setSubjectForm] = useState({
     name: '',
     code: '',
@@ -31,6 +36,7 @@ const Subjects = () => {
     fetchSubjects();
     if (isTeacher) {
       fetchStudents();
+      calculateSubjectAverages();
     } else if (isStudent) {
       // For students, automatically load their own performance
       fetchStudentPerformances(user._id || user.id);
@@ -62,6 +68,48 @@ const Subjects = () => {
     } catch (error) {
       console.error('Error fetching students:', error);
       setStudents([]);
+    }
+  };
+
+  const calculateSubjectAverages = async () => {
+    if (!isTeacher) return;
+    
+    try {
+      // Fetch all performances
+      const response = await api.get('/performance');
+      const allPerformances = response.data || [];
+      
+      // Group performances by subject and calculate averages
+      const subjectMap = {};
+      
+      allPerformances.forEach(perf => {
+        const subjectId = perf.subject?._id;
+        const subjectName = perf.subject?.name || 'Unknown';
+        const totalMarks = perf.marks?.total || 0;
+        
+        if (!subjectMap[subjectId]) {
+          subjectMap[subjectId] = {
+            name: subjectName,
+            totalMarks: 0,
+            count: 0
+          };
+        }
+        
+        subjectMap[subjectId].totalMarks += totalMarks;
+        subjectMap[subjectId].count += 1;
+      });
+      
+      // Calculate averages and format for bar chart
+      const averagesData = Object.values(subjectMap).map(subject => ({
+        name: subject.name,
+        average: subject.count > 0 ? (subject.totalMarks / subject.count).toFixed(2) : 0,
+        students: subject.count
+      }));
+      
+      setSubjectAverages(averagesData);
+    } catch (error) {
+      console.error('Error calculating subject averages:', error);
+      setSubjectAverages([]);
     }
   };
 
@@ -208,8 +256,12 @@ const Subjects = () => {
   };
 
   const handleSaveMarks = async (subjectId) => {
+    console.log('Current user:', user);
+    console.log('Current role:', role);
+    console.log('isTeacher:', isTeacher);
+    
     if (!isTeacher) {
-      alert('Only teachers can modify marks');
+      alert('Only teachers can modify marks. Please login as a teacher.');
       return;
     }
     
@@ -225,14 +277,20 @@ const Subjects = () => {
         student: selectedStudent,
         subject: subjectId,
         marks: {
-          internal: markData.internal,
-          finals: markData.finals,
-          total: markData.internal + markData.finals
+          internal: markData.internal || 0,
+          finals: markData.finals || 0,
+          total: (markData.internal || 0) + (markData.finals || 0)
         },
         attendance: {
-          percentage: markData.attendance
-        }
+          percentage: markData.attendance || 0,
+          present: 0,
+          total: 0
+        },
+        semester: '1st',
+        academicYear: '2024-2025'
       };
+
+      console.log('Sending performance data:', performanceData);
 
       // Check if performance already exists
       const existingPerf = performances.find(p => p.subject?._id === subjectId);
@@ -244,9 +302,26 @@ const Subjects = () => {
       }
       
       await fetchStudentPerformances();
+      await calculateSubjectAverages();
       alert('Marks saved successfully!');
     } catch (error) {
-      alert(error.message || 'Error saving marks');
+      console.error('Error saving marks:', error);
+      
+      let errorMessage = 'Error saving marks';
+      if (error.response?.data) {
+        const data = error.response.data;
+        errorMessage = data.message || errorMessage;
+        if (data.error) {
+          errorMessage += '\nDetails: ' + data.error;
+        }
+        if (data.details && Array.isArray(data.details)) {
+          errorMessage += '\nValidation errors:\n' + data.details.map(d => `- ${d.field}: ${d.message}`).join('\n');
+        }
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+      
+      alert(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -297,7 +372,7 @@ const Subjects = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {performances.slice(0, 3).map(performance => (
+                  {performances.map(performance => (
                     <tr key={performance._id}>
                       <td>{performance.subject?.name}</td>
                       <td>{performance.subject?.code}</td>
@@ -470,7 +545,7 @@ const Subjects = () => {
                 </tr>
               </thead>
               <tbody>
-                {subjects.slice(0, 3).map(subject => { // Limit to 3 subjects as requested
+                {subjects.map(subject => { // Show all subjects
                   const subjectMarks = marks[subject._id] || { internal: 0, finals: 0, attendance: 0 };
                   const total = subjectMarks.internal + subjectMarks.finals;
                   
@@ -523,6 +598,51 @@ const Subjects = () => {
                 })}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {/* Subject Averages Bar Chart */}
+        {subjectAverages.length > 0 && (
+          <div className="subject-averages-section">
+            <h3>Average Marks by Subject (Across All Students)</h3>
+            <ResponsiveContainer width="100%" height={400}>
+              <BarChart data={subjectAverages} margin={{ top: 20, right: 30, left: 20, bottom: 60 }}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis 
+                  dataKey="name" 
+                  angle={-45} 
+                  textAnchor="end" 
+                  height={100}
+                  interval={0}
+                />
+                <YAxis 
+                  label={{ value: 'Average Marks (out of 100)', angle: -90, position: 'insideLeft' }}
+                  domain={[0, 100]}
+                />
+                <Tooltip 
+                  formatter={(value, name) => {
+                    if (name === 'average') return [`${value}/100`, 'Average Marks'];
+                    return [value, name];
+                  }}
+                  labelFormatter={(label) => `Subject: ${label}`}
+                />
+                <Legend />
+                <Bar dataKey="average" fill="#8884d8" name="Average Marks" />
+              </BarChart>
+            </ResponsiveContainer>
+            
+            <div className="averages-summary">
+              <h4>Summary:</h4>
+              <div className="averages-list">
+                {subjectAverages.map((subject, index) => (
+                  <div key={index} className="average-item">
+                    <span className="subject-name">{subject.name}</span>
+                    <span className="average-value">{subject.average}/100</span>
+                    <span className="student-count">({subject.students} students)</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 

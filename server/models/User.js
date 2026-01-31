@@ -40,13 +40,9 @@ const userSchema = new mongoose.Schema(
       type: String,
       match: [/^\d{10}$/, 'Please provide a valid 10-digit phone number'],
     },
-    grade: {
-      type: String,
-      enum: ['10', '11', '12'],
-    },
     semester: {
       type: String,
-      enum: ['1', '2'],
+      enum: ['1', '2', '3', '4', '5', '6', '7', '8'],
     },
     subjects: [{
       type: mongoose.Schema.Types.ObjectId,

@@ -12,10 +12,11 @@ const studentSchema = new mongoose.Schema({
     unique: true,
     trim: true
   },
-  grade: {
-    type: String,
-    required: [true, 'Grade/Semester is required'],
-    trim: true
+  zScore: {
+    type: Number,
+    min: [0, 'Z-Score must be at least 0'],
+    max: [4, 'Z-Score cannot exceed 4'],
+    default: 0
   },
   semester: {
     type: String,

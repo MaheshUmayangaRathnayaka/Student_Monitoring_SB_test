@@ -13,7 +13,7 @@ const generateToken = (id) => {
 // @route   POST /api/auth/register
 // @access  Public
 export const register = asyncHandler(async (req, res) => {
-  const { name, email, password, role, studentId, phone, grade, semester } = req.body;
+  const { name, email, password, role, studentId, phone, semester } = req.body;
 
   // Check if user exists
   const userExists = await User.findOne({ email });
@@ -45,7 +45,6 @@ export const register = asyncHandler(async (req, res) => {
     role: role || 'student',
     studentId: role === 'student' ? studentId : undefined,
     phone,
-    grade: role === 'student' ? grade : undefined,
     semester: role === 'student' ? semester : undefined,
   });
 

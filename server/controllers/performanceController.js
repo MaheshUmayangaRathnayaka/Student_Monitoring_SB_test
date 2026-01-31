@@ -4,7 +4,7 @@ import Subject from '../models/Subject.js';
 
 // @desc    Get all performance records
 // @route   GET /api/performance
-// @access  Protected (Students see only their own, Teachers/Admins see all)
+// @access  Public
 export const getAllPerformance = async (req, res) => {
   try {
     const { semester, academicYear, student, subject } = req.query;
@@ -14,29 +14,7 @@ export const getAllPerformance = async (req, res) => {
     if (semester) filter.semester = semester;
     if (academicYear) filter.academicYear = academicYear;
     if (subject) filter.subject = subject;
-    
-    // If user is a student, they can only see their own performance
-    if (req.user.role === 'student') {
-      // Find the student record based on user's email or studentId
-      const studentRecord = await Student.findOne({
-        $or: [
-          { email: req.user.email },
-          { studentId: req.user.studentId }
-        ]
-      });
-      
-      if (!studentRecord) {
-        return res.status(404).json({
-          success: false,
-          message: 'Student record not found'
-        });
-      }
-      
-      filter.student = studentRecord._id;
-    } else if (student) {
-      // Teachers and admins can filter by specific student
-      filter.student = student;
-    }
+    if (student) filter.student = student;
     
     const performances = await Performance.find(filter)
       .populate('student', 'name studentId email')
@@ -122,6 +100,7 @@ export const createPerformance = async (req, res) => {
       data: populatedPerformance
     });
   } catch (error) {
+    console.error('Error creating performance:', error);
     if (error.code === 11000) {
       return res.status(400).json({
         success: false,
@@ -131,7 +110,11 @@ export const createPerformance = async (req, res) => {
     res.status(400).json({
       success: false,
       message: 'Error creating performance record',
-      error: error.message
+      error: error.message,
+      details: error.errors ? Object.keys(error.errors).map(key => ({
+        field: key,
+        message: error.errors[key].message
+      })) : null
     });
   }
 };

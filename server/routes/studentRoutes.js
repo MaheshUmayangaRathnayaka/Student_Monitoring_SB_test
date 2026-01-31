@@ -11,9 +11,9 @@ import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Public routes - teachers and admins can view all students, students can view limited info
-router.get('/', protect, getAllStudents);
-router.get('/:id', protect, getStudentById);
+// Public routes - allow viewing students without authentication
+router.get('/', getAllStudents);
+router.get('/:id', getStudentById);
 router.get('/:id/performance', protect, getStudentPerformance);
 
 // Protected routes - only teachers and admins can modify student data

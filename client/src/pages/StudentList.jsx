@@ -158,7 +158,7 @@ const StudentList = () => {
                 <th>Student ID</th>
                 <th>Name</th>
                 <th>Email</th>
-                <th>Grade</th>
+                <th>Z-Score</th>
                 <th>Semester</th>
                 <th>Phone</th>
                 <th>Actions</th>
@@ -171,7 +171,7 @@ const StudentList = () => {
                   <td className="student-name">{student.name}</td>
                   <td>{student.email}</td>
                   <td>
-                    <span className="badge badge-grade">{student.grade}</span>
+                    <span className="badge badge-grade">{student.zScore !== undefined ? student.zScore.toFixed(2) : '0.00'}</span>
                   </td>
                   <td>{student.semester}</td>
                   <td>{student.phone || 'N/A'}</td>
