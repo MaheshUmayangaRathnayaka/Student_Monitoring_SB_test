@@ -4,7 +4,7 @@ import Subject from '../models/Subject.js';
 
 // @desc    Get all performance records
 // @route   GET /api/performance
-// @access  Public
+// @access  Protected (Students see only their own, Teachers/Admins see all)
 export const getAllPerformance = async (req, res) => {
   try {
     const { semester, academicYear, student, subject } = req.query;
@@ -13,8 +13,30 @@ export const getAllPerformance = async (req, res) => {
     const filter = {};
     if (semester) filter.semester = semester;
     if (academicYear) filter.academicYear = academicYear;
-    if (student) filter.student = student;
     if (subject) filter.subject = subject;
+    
+    // If user is a student, they can only see their own performance
+    if (req.user.role === 'student') {
+      // Find the student record based on user's email or studentId
+      const studentRecord = await Student.findOne({
+        $or: [
+          { email: req.user.email },
+          { studentId: req.user.studentId }
+        ]
+      });
+      
+      if (!studentRecord) {
+        return res.status(404).json({
+          success: false,
+          message: 'Student record not found'
+        });
+      }
+      
+      filter.student = studentRecord._id;
+    } else if (student) {
+      // Teachers and admins can filter by specific student
+      filter.student = student;
+    }
     
     const performances = await Performance.find(filter)
       .populate('student', 'name studentId email')
@@ -233,6 +255,65 @@ export const getPerformanceAnalytics = async (req, res) => {
     res.status(500).json({
       success: false,
       message: 'Error fetching performance analytics',
+      error: error.message
+    });
+  }
+};
+
+// @desc    Get performance records by student ID
+// @route   GET /api/performance/student/:studentId
+// @access  Protected (Students can only access their own data)
+export const getPerformanceByStudent = async (req, res) => {
+  try {
+    const { studentId } = req.params;
+    const { semester, academicYear } = req.query;
+    
+    // If user is a student, ensure they can only access their own data
+    if (req.user.role === 'student') {
+      const studentRecord = await Student.findById(studentId);
+      if (!studentRecord) {
+        return res.status(404).json({
+          success: false,
+          message: 'Student not found'
+        });
+      }
+      
+      // Check if the student record belongs to the logged-in user
+      if (studentRecord.email !== req.user.email && studentRecord.studentId !== req.user.studentId) {
+        return res.status(403).json({
+          success: false,
+          message: 'Access denied. You can only view your own performance data.'
+        });
+      }
+    }
+    
+    // Build query filter
+    const filter = { student: studentId };
+    if (semester) filter.semester = semester;
+    if (academicYear) filter.academicYear = academicYear;
+    
+    const performances = await Performance.find(filter)
+      .populate('student', 'name studentId email grade semester')
+      .populate('subject', 'name code teacher credits')
+      .sort({ createdAt: -1 });
+    
+    if (performances.length === 0) {
+      return res.status(200).json({
+        success: true,
+        message: 'No performance records found for this student',
+        data: []
+      });
+    }
+    
+    res.status(200).json({
+      success: true,
+      count: performances.length,
+      data: performances
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Error fetching student performance records',
       error: error.message
     });
   }

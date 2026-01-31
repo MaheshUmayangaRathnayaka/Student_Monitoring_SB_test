@@ -5,19 +5,22 @@ import {
   createPerformance,
   updatePerformance,
   deletePerformance,
-  getPerformanceAnalytics
+  getPerformanceAnalytics,
+  getPerformanceByStudent
 } from '../controllers/performanceController.js';
+import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Public routes
-router.get('/', getAllPerformance);
-router.get('/analytics/overview', getPerformanceAnalytics);
-router.get('/:id', getPerformanceById);
+// Public routes - anyone can view (we'll add student-specific filtering in controller)
+router.get('/', protect, getAllPerformance);
+router.get('/analytics/overview', protect, authorize('teacher', 'admin'), getPerformanceAnalytics);
+router.get('/student/:studentId', protect, getPerformanceByStudent);
+router.get('/:id', protect, getPerformanceById);
 
-// Protected routes (will add auth middleware later)
-router.post('/', createPerformance);
-router.put('/:id', updatePerformance);
-router.delete('/:id', deletePerformance);
+// Protected routes - only teachers and admins can modify performance data
+router.post('/', protect, authorize('teacher', 'admin'), createPerformance);
+router.put('/:id', protect, authorize('teacher', 'admin'), updatePerformance);
+router.delete('/:id', protect, authorize('teacher', 'admin'), deletePerformance);
 
 export default router;

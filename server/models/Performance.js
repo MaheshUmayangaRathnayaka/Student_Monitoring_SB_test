@@ -21,13 +21,13 @@ const performanceSchema = new mongoose.Schema({
     finals: {
       type: Number,
       min: [0, 'Final marks cannot be negative'],
-      max: [100, 'Final marks cannot exceed 100'],
+      max: [50, 'Final marks cannot exceed 50'],
       default: 0
     },
     total: {
       type: Number,
       min: [0, 'Total marks cannot be negative'],
-      max: [150, 'Total marks cannot exceed 150'],
+      max: [100, 'Total marks cannot exceed 100'],
       default: 0
     }
   },
@@ -56,13 +56,13 @@ const performanceSchema = new mongoose.Schema({
   },
   semester: {
     type: String,
-    required: [true, 'Semester is required'],
-    trim: true
+    trim: true,
+    default: '1st'
   },
   academicYear: {
     type: String,
-    required: [true, 'Academic year is required'],
-    trim: true
+    trim: true,
+    default: '2024-2025'
   }
 }, {
   timestamps: true
@@ -78,7 +78,7 @@ performanceSchema.pre('save', function(next) {
   }
   
   // Auto-calculate grade based on total marks
-  const percentage = (this.marks.total / 150) * 100;
+  const percentage = (this.marks.total / 100) * 100;
   if (percentage >= 90) this.grade = 'A+';
   else if (percentage >= 80) this.grade = 'A';
   else if (percentage >= 70) this.grade = 'B+';
@@ -92,6 +92,6 @@ performanceSchema.pre('save', function(next) {
 });
 
 // Compound index to ensure one performance record per student-subject-semester combination
-performanceSchema.index({ student: 1, subject: 1, semester: 1 }, { unique: true });
+// performanceSchema.index({ student: 1, subject: 1, semester: 1 }, { unique: true });
 
 export default mongoose.model('Performance', performanceSchema);

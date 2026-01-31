@@ -18,6 +18,8 @@ services:
     env_file: ./server/.env
     environment:
       - NODE_ENV=development
+      - MONGODB_URI=mongodb://mongo:27017/student_performance
+      - CLIENT_URL=http://client:3000
     networks:
       - app-network
   mongo:
@@ -42,6 +44,8 @@ services:
       - server
     ports:
       - "3000:3000"
+    environment:
+      - VITE_API_URL=http://server:5000/api
     networks:
       - app-network
 
