@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { performanceService, studentService, subjectService } from '../services';
-import PerformanceChart from '../components/PerformanceChart';
 import './Dashboard.css';
 
 const Dashboard = () => {
@@ -140,13 +140,53 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Grade Distribution */}
-      {analytics?.gradeDistribution && (
-        <div className="chart-section">
-          <h2>Grade Distribution</h2>
-          <PerformanceChart gradeDistribution={analytics.gradeDistribution} />
+      {/* Core Subject Articles */}
+      <div className="core-subjects-section">
+        <h2>📚 Core Subject Articles</h2>
+        <div className="subject-links-grid">
+          <Link to="/subjects/technical-drawing" className="subject-link-card">
+            <div className="subject-icon">📐</div>
+            <h3>Technical Drawing & Design</h3>
+            <p>Engineering Graphics & CAD</p>
+            <span className="read-more">Read Article →</span>
+          </Link>
+
+          <Link to="/subjects/environmental-engineering" className="subject-link-card">
+            <div className="subject-icon">🌱</div>
+            <h3>Environmental Engineering</h3>
+            <p>Sustainability & Environment</p>
+            <span className="read-more">Read Article →</span>
+          </Link>
+
+          <Link to="/subjects/fluid-mechanics" className="subject-link-card">
+            <div className="subject-icon">💧</div>
+            <h3>Fluid Mechanics</h3>
+            <p>Mechanical Engineering</p>
+            <span className="read-more">Read Article →</span>
+          </Link>
+
+          <Link to="/subjects/simple-mathematics" className="subject-link-card">
+            <div className="subject-icon">🔢</div>
+            <h3>Simple Mathematics</h3>
+            <p>Foundation Mathematics</p>
+            <span className="read-more">Read Article →</span>
+          </Link>
+
+          <Link to="/subjects/fundamentals-of-electronics" className="subject-link-card">
+            <div className="subject-icon">⚡</div>
+            <h3>Fundamentals of Electronics</h3>
+            <p>Electrical Engineering</p>
+            <span className="read-more">Read Article →</span>
+          </Link>
+
+          <Link to="/subjects/engineering-ethics" className="subject-link-card">
+            <div className="subject-icon">⚖️</div>
+            <h3>Engineering Ethics</h3>
+            <p>Professional Development</p>
+            <span className="read-more">Read Article →</span>
+          </Link>
         </div>
-      )}
+      </div>
 
       {/* Alerts Section */}
       {analytics?.studentsAtRisk > 0 && (

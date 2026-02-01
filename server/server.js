@@ -20,7 +20,16 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+const corsOptions = {
+  origin: [
+    'http://localhost:3000',  // Local development
+    'http://client:3000',     // Docker container
+    process.env.CLIENT_URL    // Environment variable
+  ].filter(Boolean),
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -70,6 +79,17 @@ app.use(errorHandler);
 // Start server function
 const startServer = async () => {
   try {
+    // Validate required environment variables
+    if (!process.env.JWT_SECRET) {
+      console.error('FATAL ERROR: JWT_SECRET is not defined in environment variables'.red.bold);
+      console.error('Please check that server/.env file exists and contains JWT_SECRET'.yellow);
+      process.exit(1);
+    }
+    
+    console.log('Environment variables loaded successfully'.green);
+    console.log(`JWT_SECRET: ${process.env.JWT_SECRET ? '✓ Configured' : '✗ Missing'}`.cyan);
+    console.log(`MONGODB_URI: ${process.env.MONGODB_URI ? '✓ Configured' : '✗ Missing'}`.cyan);
+    
     // Try to connect to MongoDB first
     await connectDB();
   } catch (error) {

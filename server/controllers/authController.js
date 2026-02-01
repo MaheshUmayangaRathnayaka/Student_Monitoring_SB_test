@@ -3,8 +3,16 @@ import asyncHandler from 'express-async-handler';
 import jwt from 'jsonwebtoken';
 
 // Generate JWT Token
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+const generateToken = (user) => {
+  const payload = {
+    id: user._id || user.id,
+    email: user.email,
+    role: user.role,
+    name: user.name,
+    studentId: user.studentId
+  };
+  
+  return jwt.sign(payload, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE || '7d',
   });
 };
@@ -55,7 +63,7 @@ export const register = asyncHandler(async (req, res) => {
       email: user.email,
       role: user.role,
       studentId: user.studentId,
-      token: generateToken(user._id),
+      token: generateToken(user),
     });
   } else {
     res.status(400);
@@ -91,7 +99,7 @@ export const login = asyncHandler(async (req, res) => {
     email: user.email,
     role: user.role,
     studentId: user.studentId,
-    token: generateToken(user._id),
+    token: generateToken(user),
   });
 });
 
@@ -146,7 +154,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
     email: updatedUser.email,
     role: updatedUser.role,
     studentId: updatedUser.studentId,
-    token: generateToken(updatedUser._id),
+    token: generateToken(updatedUser),
   });
 });
 

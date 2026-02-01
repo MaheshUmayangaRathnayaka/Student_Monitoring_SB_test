@@ -50,18 +50,21 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: userData };
     } catch (error) {
       console.error('Login error:', error);
-      console.error('Error details:', error);
       
       // Extract meaningful error message
       let errorMessage = 'Login failed';
       
-      if (error.message) {
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
         errorMessage = error.message;
       } else if (typeof error === 'string') {
         errorMessage = error;
-      } else if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
+      } else if (error.error) {
+        errorMessage = error.error;
       }
+      
+      console.error('Parsed error message:', errorMessage);
       
       return { 
         success: false, 
@@ -93,18 +96,21 @@ export const AuthProvider = ({ children }) => {
       return { success: true, user: newUser };
     } catch (error) {
       console.error('Signup error:', error);
-      console.error('Error details:', error);
       
       // Extract meaningful error message
       let errorMessage = 'Signup failed';
       
-      if (error.message) {
+      if (error.response?.data?.message) {
+        errorMessage = error.response.data.message;
+      } else if (error.message) {
         errorMessage = error.message;
       } else if (typeof error === 'string') {
         errorMessage = error;
-      } else if (error.response?.data?.message) {
-        errorMessage = error.response.data.message;
+      } else if (error.error) {
+        errorMessage = error.error;
       }
+      
+      console.error('Parsed error message:', errorMessage);
       
       return { 
         success: false, 

@@ -13,29 +13,21 @@ services:
       - /usr/src/app/node_modules
     ports:
       - "5000:5000"
-    depends_on:
-      - mongo
     env_file: ./server/.env
     environment:
       - NODE_ENV=development
-      - CLIENT_URL=http://localhost:3000
+      - CLIENT_URL=http://client:3000
+      - MONGODB_URI=mongodb+srv://maheshumayangarathnayaka_db_user:nYJ9vDH3P1z5rKVe@cluster0.yawqd5y.mongodb.net/student_performance?appName=Cluster0
     networks:
       - app-network
-  mongo:
-    image: mongo
-    volumes:
-      - data-volume:/data/db
-    ports:
-      - "27018:27017"
-    networks:
-      - app-network
+  
   client:
     build:
       context: ./client
       dockerfile: Dockerfile
     image: myapp-client
     container_name: myapp-react-client
-    command: npm start
+    command: npm run dev -- --host 0.0.0.0
     volumes:
       - ./client/:/usr/app
       - /usr/app/node_modules
@@ -44,16 +36,16 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - VITE_API_URL=http://localhost:5000/api
+      - VITE_API_URL=http://server:5000/api
     networks:
       - app-network
 
 networks:
-    app-network:
-        driver: bridge
+  app-network:
+    driver: bridge
 
+# REMOVED: data-volume (for MongoDB) from volumes section
 volumes:
-    data-volume:
-    node_modules:
-    web-root:
-      driver: local
+  node_modules:
+  web-root:
+    driver: local
