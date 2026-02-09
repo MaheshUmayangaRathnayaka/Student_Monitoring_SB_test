@@ -9,7 +9,7 @@ pipeline {
         DOCKER_TAG = "${env.BUILD_NUMBER}"
         
         // MongoDB connection for testing
-        MONGODB_URI = 'mongodb://localhost:27017/student_performance_test'
+        MONGODB_URI = 'mongodb+srv://maheshumayangarathnayaka_db_user:nYJ9vDH3P1z5rKVe@cluster0.yawqd5y.mongodb.net/student_performance?appName=Cluster0'
         JWT_SECRET = 'test-jwt-secret-key'
         NODE_ENV = 'test'
     }
