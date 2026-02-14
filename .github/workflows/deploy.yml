@@ -1,0 +1,46 @@
+name: Deploy Student Performance System
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build Client Docker Image
+        run: |
+          docker build -t maheshur/student-performance-client:latest ./client
+
+      - name: Build Server Docker Image
+        run: |
+          docker build -t maheshur/student-performance-server:latest ./server
+
+      - name: Push Client Image
+        run: docker push maheshur/student-performance-client:latest
+
+      - name: Push Server Image
+        run: docker push maheshur/student-performance-server:latest
+
+      - name: Deploy to EC2
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: 43.205.210.137
+          username: ubuntu
+          key: ${{ secrets.EC2_PEM }}
+          script: |
+            cd ~/student-performance-system
+            docker compose down
+            docker compose pull
+            docker compose up -d
