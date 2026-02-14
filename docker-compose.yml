@@ -2,50 +2,32 @@ version: '3.7'
 
 services:
   server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    image: myapp-server
+    image: maheshur/student-performance-server:latest
     container_name: myapp-node-server
-    command: /usr/src/app/node_modules/.bin/nodemon server.js
-    volumes:
-      - ./server/:/usr/src/app
-      - /usr/src/app/node_modules
+    restart: always
     ports:
       - "5000:5000"
-    env_file: ./server/.env
+    env_file:
+      - ./server/.env
     environment:
-      - NODE_ENV=development
-      - CLIENT_URL=http://client:3000
-      - MONGODB_URI=mongodb+srv://maheshumayangarathnayaka_db_user:nYJ9vDH3P1z5rKVe@cluster0.yawqd5y.mongodb.net/student_performance?appName=Cluster0
+      - NODE_ENV=production
+      - CLIENT_URL=http://43.205.210.137:3000
     networks:
       - app-network
-  
+
   client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    image: myapp-client
+    image: maheshur/student-performance-client:latest
     container_name: myapp-react-client
-    command: npm run dev -- --host 0.0.0.0
-    volumes:
-      - ./client/:/usr/app
-      - /usr/app/node_modules
+    restart: always
     depends_on:
       - server
     ports:
-      - "3000:3000"
+      - "3000:80"
     environment:
-      - VITE_API_URL=http://server:5000/api
+      - VITE_API_URL=http://43.205.210.137:5000/api
     networks:
       - app-network
 
 networks:
   app-network:
     driver: bridge
-
-# REMOVED: data-volume (for MongoDB) from volumes section
-volumes:
-  node_modules:
-  web-root:
-    driver: local

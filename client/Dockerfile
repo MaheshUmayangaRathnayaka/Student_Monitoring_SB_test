@@ -1,18 +1,20 @@
-# Dockerfile for React client (Vite Development)
+# ---------- BUILD STAGE ----------
+FROM node:18 AS build
 
-FROM node:20-alpine
+WORKDIR /app
 
-WORKDIR /usr/app
-
-# Install dependencies
 COPY package*.json ./
-RUN npm ci --silent
+RUN npm install
 
-# Copy source code
 COPY . .
+RUN npm run build
 
-# Expose Vite dev server port
-EXPOSE 3000
 
-# Start development server
-CMD ["npm", "run", "dev", "--", "--host", "0.0.0.0"]
+# ---------- PRODUCTION STAGE ----------
+FROM nginx:alpine
+
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
