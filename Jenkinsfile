@@ -14,14 +14,14 @@ pipeline {
                 stage('Build Server Image') {
                     steps {
                         dir('server') {
-                            sh 'docker build -t maheshumayangarathnayaka/student-performance-server:${BUILD_NUMBER} .'
+                            sh 'docker build -t maheshur/student-performance-server:${BUILD_NUMBER} .'
                         }
                     }
                 }
                 stage('Build Client Image') {
                     steps {
                         dir('client') {
-                            sh 'docker build -t maheshumayangarathnayaka/student-performance-client:${BUILD_NUMBER} .'
+                            sh 'docker build -t maheshur/student-performance-client:${BUILD_NUMBER} .'
                         }
                     }
                 }
@@ -29,9 +29,9 @@ pipeline {
         }
         stage('Login to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: 'dockerhub-credentials', variable: 'dockerhubpwd')]) {
+                withCredentials([string(credentialsId: 'test-dockerhubpassword', variable: 'test-dockerhubpass')]) {
                     script {  
-                        sh "docker login -u maheshumayangarathnayaka -p '${dockerhubpwd}'"
+                        sh "docker login -u maheshur -p '${test-dockerhubpass}'"
                     }
                 }
             }
@@ -40,12 +40,12 @@ pipeline {
             parallel {
                 stage('Push Server Image') {
                     steps {
-                        sh "docker push maheshumayangarathnayaka/student-performance-server:${BUILD_NUMBER}"
+                        sh "docker push maheshur/student-performance-server:${BUILD_NUMBER}"
                     }
                 }
                 stage('Push Client Image') {
                     steps {
-                        sh "docker push maheshumayangarathnayaka/student-performance-client:${BUILD_NUMBER}"
+                        sh "docker push maheshur/student-performance-client:${BUILD_NUMBER}"
                     }
                 }
             }
