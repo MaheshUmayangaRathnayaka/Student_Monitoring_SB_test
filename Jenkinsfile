@@ -29,11 +29,10 @@ pipeline {
         }
         stage('Login to Docker Hub') {
             steps {
-                withCredentials([string(credentialsId: 'test-dockerhubpassword', variable: 'test-dockerhubpass')]) {
-                    script {  
-                        sh "docker login -u maheshur -p '${test-dockerhubpass}'"
-                    }
+                withCredentials([string(credentialsId: 'test-dockerhubpassword', variable: 'DOCKER_PASS')]) {
+                   sh "docker login -u maheshur -p ${DOCKER_PASS}"
                 }
+
             }
         }
         stage('Push Images') {
