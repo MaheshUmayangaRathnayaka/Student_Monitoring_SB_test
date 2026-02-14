@@ -6,7 +6,7 @@ const EnvironmentalEngineeringArticle = () => {
     <div className="article-page">
       <div className="article-header">
         <Link to="/subjects" className="back-link">← Back to Subjects</Link>
-        <h1>🌱 Environmental Engineering</h1>
+        <h1>🌱 Evironmental Engineering</h1>
         <div className="subject-tag">Sustainability & Environment</div>
       </div>
 
