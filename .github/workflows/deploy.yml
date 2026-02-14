@@ -42,6 +42,6 @@ jobs:
           script: |
             cd ~/Student_Monitoring_SB_test
             docker system prune -f
-            docker compose down
-            docker compose pull
-            docker compose up -d
+            docker-compose down
+            docker-compose pull
+            docker-compose up -d
