@@ -41,7 +41,7 @@ const Login = () => {
     <div className="auth-container">
       <div className="auth-card">
         <h1>Student Performance System</h1>
-        <h2>Loginnhn</h2>
+        <h2>Loginnhssn</h2>
         
         {error && <div className="error-message">{error}</div>}
         
