@@ -3,6 +3,10 @@ FROM node:18 AS build
 
 WORKDIR /app
 
+# Accept build argument for API URL
+ARG VITE_API_URL=http://localhost:5000/api
+ENV VITE_API_URL=$VITE_API_URL
+
 COPY package*.json ./
 RUN npm install
 

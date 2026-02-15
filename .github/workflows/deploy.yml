@@ -25,6 +25,7 @@ jobs:
       - name: Build Client Docker Image
         run: |
           docker build --no-cache \
+          --build-arg VITE_API_URL=http://43.205.210.137:5000/api \
           -t maheshur/student-performance-client:latest \
           ./client
 
@@ -53,16 +54,25 @@ jobs:
           script: |
             cd ~/Student_Monitoring_SB_test
 
+            echo "Pulling latest code from GitHub..."
+            git pull origin main
+
             echo "Stopping old containers..."
             docker-compose down
 
-            echo "Removing unused images..."
+            echo "Removing old images to force fresh pull..."
+            docker rmi maheshur/student-performance-server:latest || true
+            docker rmi maheshur/student-performance-client:latest || true
             docker image prune -af
 
-            echo "Pulling latest images..."
-            docker-compose pull
+            echo "Pulling latest images from Docker Hub..."
+            docker pull maheshur/student-performance-server:latest
+            docker pull maheshur/student-performance-client:latest
 
-            echo "Starting containers..."
-            docker-compose up -d
+            echo "Starting containers (using pre-built images, no local build)..."
+            docker-compose up -d --no-build
+
+            echo "Verifying deployment..."
+            docker-compose ps
 
             echo "Deployment completed successfully!"
