@@ -53,16 +53,37 @@ jobs:
           script: |
             cd ~/Student_Monitoring_SB_test
 
-            echo "Stopping old containers..."
-            docker-compose down
+            echo "Setting up environment variables..."
+            export MONGODB_URI="${{ secrets.MONGODB_URI }}"
+            export JWT_SECRET="${{ secrets.JWT_SECRET }}"
 
-            echo "Removing unused images..."
+            echo "Stopping old containers..."
+            docker compose down
+
+            echo "Removing old containers and images..."
+            docker container prune -f
             docker image prune -af
 
-            echo "Pulling latest images..."
-            docker-compose pull
+            echo "Pulling latest images with force..."
+            docker compose pull
 
-            echo "Starting containers..."
-            docker-compose up -d
+            echo "Removing any cached images..."
+            docker rmi $(docker images -q maheshur/student-performance-client:latest) 2>/dev/null || true
+            docker rmi $(docker images -q maheshur/student-performance-server:latest) 2>/dev/null || true
+
+            echo "Pulling fresh images..."
+            docker compose pull
+
+            echo "Starting containers with fresh images..."
+            MONGODB_URI="${{ secrets.MONGODB_URI }}" JWT_SECRET="${{ secrets.JWT_SECRET }}" docker compose up -d
+
+            echo "Waiting for containers to start..."
+            sleep 10
+
+            echo "Checking container status..."
+            docker compose ps
+
+            echo "Checking container logs..."
+            docker compose logs --tail=20
 
             echo "Deployment completed successfully!"
