@@ -35,49 +35,18 @@ pipeline {
 
             }
         }
-        stage('Tag as Latest') {
-            parallel {
-                stage('Tag Server as Latest') {
-                    steps {
-                        sh "docker tag maheshur/student-performance-server:${BUILD_NUMBER} maheshur/student-performance-server:latest"
-                    }
-                }
-                stage('Tag Client as Latest') {
-                    steps {
-                        sh "docker tag maheshur/student-performance-client:${BUILD_NUMBER} maheshur/student-performance-client:latest"
-                    }
-                }
-            }
-        }
         stage('Push Images') {
             parallel {
-                stage('Push Server Images') {
+                stage('Push Server Image') {
                     steps {
                         sh "docker push maheshur/student-performance-server:${BUILD_NUMBER}"
-                        sh "docker push maheshur/student-performance-server:latest"
                     }
                 }
-                stage('Push Client Images') {
+                stage('Push Client Image') {
                     steps {
                         sh "docker push maheshur/student-performance-client:${BUILD_NUMBER}"
-                        sh "docker push maheshur/student-performance-client:latest"
                     }
                 }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                sh '''
-                    # Pull latest images
-                    docker pull maheshur/student-performance-server:latest
-                    docker pull maheshur/student-performance-client:latest
-                    
-                    # Stop and remove existing containers
-                    docker compose down || true
-                    
-                    # Start with latest images
-                    docker compose up -d
-                '''
             }
         }
     }
