@@ -4,7 +4,6 @@ services:
   server:
     image: maheshur/student-performance-server:latest
     container_name: myapp-node-server
-    restart: always
     ports:
       - "5000:5000"
     env_file:
@@ -18,11 +17,10 @@ services:
   client:
     image: maheshur/student-performance-client:latest
     container_name: myapp-react-client
-    restart: always
     depends_on:
       - server
     ports:
-      - "3000:80"
+      - "3000:3000"
     environment:
       - VITE_API_URL=http://43.205.210.137:5000/api
     networks:
